@@ -212,7 +212,7 @@
     const theme = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
     const s = document.createElement("script");
     s.src = "https://giscus.app/client.js";
-    s.setAttribute("data-repo", "m69c6hh7rm-cloud/sz_lby.github.io");
+    s.setAttribute("data-repo", "sz-lby/sz-lby.github.io");
     s.setAttribute("data-repo-id", "1316980589");
     s.setAttribute("data-category", "Announcements");
     // ⚠️ 需替换：去 https://giscus.app 配置后，把生成的 data-category-id 填到这里
