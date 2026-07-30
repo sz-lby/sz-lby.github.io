@@ -11,7 +11,9 @@
     marked.setOptions({ gfm: true, breaks: true });
   }
 
-  const ARTICLES = window.ARTICLES || [];
+  const SRC = window.ARTICLES || [];
+  // 按发布日期降序排列，新文章自动置顶
+  const ARTICLES = [...SRC].sort((a, b) => (b.date || "").localeCompare(a.date || ""));
   const $ = (sel, root) => (root || document).querySelector(sel);
   const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
 
@@ -166,6 +168,67 @@
     }
   }
 
+  /* ---------------- 暗色模式 ---------------- */
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    $$(".theme-toggle").forEach((btn) => {
+      btn.textContent = theme === "dark" ? "☀️" : "🌙";
+      btn.setAttribute("aria-label", theme === "dark" ? "切换到亮色模式" : "切换到暗色模式");
+    });
+  }
+  function initTheme() {
+    let theme = localStorage.getItem("theme");
+    if (!theme) {
+      const sysDark =
+        window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      theme = sysDark ? "dark" : "light";
+    }
+    applyTheme(theme);
+  }
+  function bindThemeToggle() {
+    $$(".theme-toggle").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const next =
+          document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        localStorage.setItem("theme", next);
+        applyTheme(next);
+        syncGiscusTheme(next);
+      });
+    });
+  }
+  function syncGiscusTheme(theme) {
+    const iframe = document.querySelector("iframe.giscus-frame");
+    if (iframe) {
+      iframe.contentWindow.postMessage(
+        { giscus: { setConfig: { theme } } },
+        "https://giscus.app"
+      );
+    }
+  }
+  function loadGiscus() {
+    const box = document.getElementById("giscus");
+    if (!box || box.dataset.loaded) return;
+    box.dataset.loaded = "1";
+    const theme = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+    const s = document.createElement("script");
+    s.src = "https://giscus.app/client.js";
+    s.setAttribute("data-repo", "m69c6hh7rm-cloud/sz_lby.github.io");
+    s.setAttribute("data-repo-id", "1316980589");
+    s.setAttribute("data-category", "Announcements");
+    // ⚠️ 需替换：去 https://giscus.app 配置后，把生成的 data-category-id 填到这里
+    s.setAttribute("data-category-id", "<<GISCUS_CATEGORY_ID>>");
+    s.setAttribute("data-mapping", "url");
+    s.setAttribute("data-strict", "0");
+    s.setAttribute("data-reactions-enabled", "1");
+    s.setAttribute("data-emit-metadata", "0");
+    s.setAttribute("data-input-position", "bottom");
+    s.setAttribute("data-theme", theme);
+    s.setAttribute("data-lang", "zh-CN");
+    s.setAttribute("crossorigin", "anonymous");
+    s.async = true;
+    box.appendChild(s);
+  }
+
   /* ---------------- 移动端导航 ---------------- */
   function bindNav() {
     const toggle = $(".nav-toggle");
@@ -180,8 +243,11 @@
 
   /* ---------------- 启动 ---------------- */
   document.addEventListener("DOMContentLoaded", () => {
+    initTheme();
     bindNav();
+    bindThemeToggle();
     renderListPage();
     renderDetailPage();
+    loadGiscus();
   });
 })();
