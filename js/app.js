@@ -215,8 +215,7 @@
     s.setAttribute("data-repo", "sz-lby/sz-lby.github.io");
     s.setAttribute("data-repo-id", "1316980589");
     s.setAttribute("data-category", "Announcements");
-    // ⚠️ 需替换：去 https://giscus.app 配置后，把生成的 data-category-id 填到这里
-    s.setAttribute("data-category-id", "<<GISCUS_CATEGORY_ID>>");
+    s.setAttribute("data-category-id", "DIC_kwDOTn-Hbc4DCT69");
     s.setAttribute("data-mapping", "url");
     s.setAttribute("data-strict", "0");
     s.setAttribute("data-reactions-enabled", "1");
