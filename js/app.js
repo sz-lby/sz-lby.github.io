@@ -32,6 +32,8 @@
 
     let activeTag = "全部";
     let keyword = "";
+    let pageSize = 6;
+    let shown = pageSize;
 
     function buildTagBar() {
       if (!tagBar) return;
@@ -42,6 +44,7 @@
       $$(".tag-chip", tagBar).forEach((btn) => {
         btn.addEventListener("click", () => {
           activeTag = btn.dataset.tag;
+          shown = pageSize;
           buildTagBar();
           paint();
         });
@@ -59,12 +62,18 @@
         return okTag && okKw;
       });
 
+      const lm = document.getElementById("load-more");
+      const hint = document.getElementById("result-hint");
+
       if (!list.length) {
         grid.innerHTML = `<div class="empty">😶 没有找到相关文章，换个标签或关键词试试～</div>`;
+        if (lm) lm.style.display = "none";
+        if (hint) hint.textContent = "";
         return;
       }
 
-      grid.innerHTML = list
+      const visible = list.slice(0, shown);
+      grid.innerHTML = visible
         .map(
           (a) => `
         <article class="card">
@@ -82,17 +91,43 @@
         </article>`
         )
         .join("");
+
+      if (lm) {
+        if (list.length > shown) {
+          lm.style.display = "";
+          lm.textContent = `加载更多（还有 ${list.length - shown} 篇）`;
+        } else {
+          lm.style.display = "none";
+        }
+      }
+      if (hint) hint.textContent = keyword ? `找到 ${list.length} 篇匹配「${keyword}」` : "";
     }
 
     if (searchInput) {
+      let timer;
       searchInput.addEventListener("input", (e) => {
-        keyword = e.target.value.trim().toLowerCase();
-        paint();
+        clearTimeout(timer);
+        const v = e.target.value.trim().toLowerCase();
+        timer = setTimeout(() => {
+          keyword = v;
+          shown = pageSize;
+          paint();
+        }, 250);
       });
     }
 
     buildTagBar();
     paint();
+
+    // 加载更多
+    const lmBtn = document.getElementById("load-more");
+    if (lmBtn) {
+      lmBtn.addEventListener("click", () => {
+        shown += pageSize;
+        paint();
+        lmBtn.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    }
 
     // 文章计数
     const countEl = $("#article-count");

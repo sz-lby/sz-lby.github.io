@@ -303,3 +303,27 @@ img { max-width: 100%; display: block; }
 [data-theme="dark"] #search-input { background: var(--card); color: var(--ink); }
 [data-theme="dark"] .hero { background: linear-gradient(135deg, #0a2a78 0%, #134fc4 60%, #2f6fd6 100%); }
 .giscus-box { margin-top: 8px; }
+
+/* ----------------------- Hero RSS 订阅按钮 ----------------------- */
+.hero-rss {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 26px; padding: 11px 22px; border-radius: 999px;
+  background: #fff; color: var(--blue); font-weight: 700; font-size: 15px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.18); transition: .18s;
+}
+.hero-rss:hover { text-decoration: none; transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0,0,0,.28); }
+
+/* ----------------------- 搜索结果提示 ----------------------- */
+.result-hint {
+  min-height: 20px; margin: -8px 0 18px; font-size: 14px; color: var(--ink-soft);
+}
+.result-hint:empty { display: none; }
+
+/* ----------------------- 加载更多 ----------------------- */
+.load-more-wrap { text-align: center; margin: 34px 0 10px; }
+.load-more {
+  border: 1px solid var(--blue); background: var(--card); color: var(--blue);
+  padding: 12px 34px; border-radius: 999px; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: .18s; box-shadow: var(--shadow);
+}
+.load-more:hover { background: var(--blue); color: #fff; }
